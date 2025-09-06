@@ -5,55 +5,16 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, MapPin, Users, BookOpen, Award, TrendingUp, Star, Phone, Globe, Mail } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
-
-// Mock college data - replace with real dataset
-const mockCollegeData = {
-  1: {
-    name: "Indian Institute of Technology Delhi",
-    shortName: "IIT Delhi",
-    rank: 1,
-    location: "New Delhi, India",
-    established: 1961,
-    type: "Public Engineering Institute",
-    website: "https://home.iitd.ac.in",
-    phone: "+91-11-2659-1999",
-    email: "info@admin.iitd.ac.in",
-    description: "IIT Delhi is one of the premier engineering institutions in India, known for its excellent academic programs, cutting-edge research, and distinguished alumni network.",
-    courses: [
-      { name: "Computer Science & Engineering", cutoff: "JEE Advanced Rank 1-65", seats: 120 },
-      { name: "Electrical Engineering", cutoff: "JEE Advanced Rank 100-300", seats: 105 },
-      { name: "Mechanical Engineering", cutoff: "JEE Advanced Rank 200-400", seats: 115 },
-      { name: "Chemical Engineering", cutoff: "JEE Advanced Rank 300-500", seats: 70 }
-    ],
-    facilities: ["Library", "Hostels", "Sports Complex", "Research Labs", "Medical Center", "Cafeteria"],
-    rankings: [
-      { agency: "NIRF Engineering", rank: 2, year: 2024 },
-      { agency: "QS World University", rank: 197, year: 2024 },
-      { agency: "THE World University", rank: 401-500, year: 2024 }
-    ],
-    cutoffTrends: [
-      { year: 2019, general: 65, obc: 150, sc: 320, st: 450 },
-      { year: 2020, general: 60, obc: 140, sc: 300, st: 420 },
-      { year: 2021, general: 55, obc: 135, sc: 290, st: 400 },
-      { year: 2022, general: 50, obc: 130, sc: 280, st: 385 },
-      { year: 2023, general: 45, obc: 125, sc: 270, st: 370 },
-      { year: 2024, general: 40, obc: 120, sc: 260, st: 360 }
-    ],
-    placementStats: [
-      { year: 2020, avgPackage: 16.93, highestPackage: 1.2, placementRate: 85 },
-      { year: 2021, avgPackage: 18.05, highestPackage: 1.8, placementRate: 88 },
-      { year: 2022, avgPackage: 20.17, highestPackage: 2.0, placementRate: 90 },
-      { year: 2023, avgPackage: 23.49, highestPackage: 2.5, placementRate: 92 },
-      { year: 2024, avgPackage: 25.82, highestPackage: 3.0, placementRate: 95 }
-    ]
-  }
-};
+import { mockColleges } from "@/data/colleges";
+import { generateCollegeDetails, predefinedCollegeData } from "@/data/collegeData";
 
 const CollegeProfile = () => {
   const { id } = useParams();
-  const college = mockCollegeData[Number(id) as keyof typeof mockCollegeData];
-
-  if (!college) {
+  
+  // Find the basic college info from the shared data
+  const basicCollegeInfo = mockColleges.find(c => c.id === Number(id));
+  
+  if (!basicCollegeInfo) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="glass-card border-neon-blue/20">
@@ -68,6 +29,9 @@ const CollegeProfile = () => {
       </div>
     );
   }
+  
+  // Get detailed college data - use predefined data for some colleges, generate for others
+  const college = predefinedCollegeData[Number(id)] || generateCollegeDetails(basicCollegeInfo);
 
   return (
     <div className="min-h-screen bg-background">
